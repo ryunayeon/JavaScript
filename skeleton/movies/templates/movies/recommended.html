@@ -11,23 +11,44 @@
     <button type='submit'>제출</button>
   </form>
   {% comment %} 추천 영화 리스트 출력 {% endcomment %}
-  <div>
+  <ul id="myul">
 
-  </div>
+  </ul>
 {% endblock %}
 
 {% block script %}
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     const preference = document.querySelector('#preference > button')
+    const ul = document.querySelector('#myul')
     preference.addEventListener('click', function (event) {
+      ul.innerHTML = ''
       event.preventDefault()
       const checkbox = document.getElementsByName('number')
+      const request = []
       checkbox.forEach((element) => {
         if (element.checked) {
-          console.log(element)
+          request.push(element.id)
         }
       });
+      // console.log(request)
+      axios({
+        method:'get',
+        url:`http://127.0.0.1:8000/movies/recommend/`,
+        params:{
+          lst:request
+        }
+      })
+      .then((res) => {
+        // console.log(res.data['data'])
+        aa = res.data['data']
+        aa.forEach(element => {
+          // console.log(element)
+          const myli = document.createElement('img')
+          myli.setAttribute('src', element[0])
+          ul.appendChild(myli)
+        });
+      })
     })
     
   </script>
